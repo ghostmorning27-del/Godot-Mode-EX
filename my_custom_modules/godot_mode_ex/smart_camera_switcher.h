@@ -2,11 +2,12 @@
 #define SMART_CAMERA_SWITCHER_H
 #include "scene/3d/camera_3d.h"
 #include "scene/3d/node_3d.h"
+
 class SmartCameraSwitcher : public Node3D {
     GDCLASS(SmartCameraSwitcher, Node3D);
 private:
-    Camera3D *fps_camera;
-    Camera3D *tps_camera;
+    Camera3D *fps_camera = nullptr;
+    Camera3D *tps_camera = nullptr;
     bool is_fps = true;
 protected:
     static void _bind_methods();
