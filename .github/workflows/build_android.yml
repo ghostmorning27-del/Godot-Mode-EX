@@ -1,0 +1,27 @@
+name: Build Godot Android Engine
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+    - name: Setup NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r23c
+    - name: Build Godot
+      run: |
+        sudo apt-get update && sudo apt-get install -y scons python3
+        scons platform=android target=template_release arch=arm64 -j4
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: godot-android-template
+        path: bin/android/
