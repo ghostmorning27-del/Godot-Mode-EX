@@ -7,19 +7,24 @@ jobs:
     - uses: actions/checkout@v4
     - name: Clone Godot
       run: git clone --depth 1 --branch master https://github.com/godotengine/godot.git godot_source
+    - name: Copy Custom Modules
+      run: cp -r my_custom_modules/godot_mode_ex godot_source/modules/
     - name: Setup Java
       uses: actions/setup-java@v4
       with: { distribution: 'temurin', java-version: '17' }
     - name: Setup NDK
       uses: nttld/setup-ndk@v1
       with: { ndk-version: r23c }
-    - name: Build Godot Default
+    - name: Build Editor and Template
       working-directory: ./godot_source
       run: |
         sudo apt-get update && sudo apt-get install -y scons python3
+        scons platform=android target=editor arch=arm64 -j4
         scons platform=android target=template_release arch=arm64 -j4
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: godot-android-template
-        path: godot_source/bin/android/
+        name: godot-android-all
+        path: |
+          godot_source/bin/android/
+          godot_source/platform/android/java/lib/libs/
